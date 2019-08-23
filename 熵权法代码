@@ -1,0 +1,29 @@
+#完整得熵权法代码
+import numpy as np
+import xlrd #读数据并求熵
+path=u'D:\experiment data\shangquan.xlsx'
+hn,nc=1,1#hn为表头行数,nc为表头列数
+sheetname=u'Sheet3'
+def readexcel(nc):    
+    df=pd.read_excel(fp,sheet_name='Sheet3')
+    data=df.values[:,nc:]   
+    return data
+def entropy(data0):    #返回每个样本的指数    
+    #样本数，指标个数    
+    n,m=np.shape(data0)    #一行一个样本，一列一个指标    
+    #下面是归一化    
+    maxium=np.max(data0,axis=0)    
+    minium=np.min(data0,axis=0)    
+    data= (data0-minium)*1.0/(maxium-minium)    ##计算第j项指标，第i个样本占该指标的比重    
+    sumzb=np.sum(data,axis=0)    
+    data=data/sumzb    #对ln0处理    
+    a=data*1.0
+    a[np.where(data==0)]=0.0000001#  #计算每个指标的熵 
+    e=(-1.0/np.log(n))*np.sum(data*np.log(a.astype('float')),axis=0)#    
+    #计算权重    
+    w=(1-e)/np.sum(1-e)    
+    recodes=np.sum(data0*w,axis=1)    
+    return recodes,w
+data=readexcel(nc)
+grades=entropy(data)
+print(np.array(grades))
